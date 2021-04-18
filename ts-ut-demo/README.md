@@ -3,8 +3,20 @@
 ## Target
 
 * Todo List
+
   1. Consolidate the writing of TS's basic components
+
+     
+
   2. Familiar with React component testing methods
+
+> [testing-library/jest-dom](https://github.com/testing-library/jest-dom)
+>
+> [example-external](https://testing-library.com/docs/example-external)
+>
+> [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
+>
+> [Kent C. Dodds's Blog](https://kentcdodds.com/blog/?q=testing)
 
 ## Available Scripts
 
