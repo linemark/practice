@@ -1,10 +1,10 @@
 // TODO: find how to check innerHTML api for this situation
 //       change the render way to aviod it
 
-// NOTE: shouldn't test in different 'it', it will be cleared everytime.
+// NOTE: shouldn't test in different 'it', rendered compoment will be cleared everytime.
 //       rerender in beforeEach can resolve this problem
 
-// TODO: is that html props 'data-testid' will be remove when packaging?
+// QUESTION: is that html props 'data-testid' will be remove when packaging?
 
 import React from "react";
 import { render, RenderResult } from "@testing-library/react";
@@ -37,17 +37,41 @@ describe("todo list", () => {
     });
 
     describe("when click delete button", () => {
-      beforeAll(() => {
-        wrapper = wrapperRender();
+      beforeEach(() => {
+        userEvent.click(wrapper.getByText("delete"));
+      });
+
+      it("should list have no item", async () => {
+        expect(await wrapper.findByTestId("list-ul")).toBeEmptyDOMElement();
+      });
+
+      it("should total count is 0", async () => {
+        expect(wrapper.getByTestId("total")).toHaveTextContent("total: 0");
+      });
+    });
+
+    describe("when batch add todo items", () => {
+      beforeEach(() => {
         const todoInput = wrapper.getByPlaceholderText("todo item");
-        userEvent.type(todoInput, "todo no.1");
+        userEvent.type(todoInput, "todo no.2");
+        userEvent.click(wrapper.getByText("add"));
+        userEvent.type(todoInput, "todo no.3");
         userEvent.click(wrapper.getByText("add"));
       });
-      // TypeError: Cannot read property 'getByText' of undefined ?
-      userEvent.click(wrapper.getByText("delete"));
-      // it("should list have no item", async () => {
-      //   expect(await wrapper.findByTestId("list-ul")).toBeEmpty();
-      // });
+
+      it("should batch add todo items", async () => {
+        const itemUl = await wrapper.findByTestId("list-ul");
+        expect(itemUl.childElementCount).toBe(3);
+      });
+
+      it("should total count is 3", () => {
+        expect(wrapper.getByTestId("total")).toHaveTextContent("total: 3");
+      });
+
+      it("should empty todo list after click clear all", async () => {
+        userEvent.click(wrapper.getByText("clear all"));
+        expect(await wrapper.findByTestId("list-ul")).toBeEmptyDOMElement();
+      });
     });
   });
 });
